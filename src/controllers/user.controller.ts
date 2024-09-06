@@ -1,5 +1,5 @@
 import { Request, Response } from 'express'
-import { createUserService } from '../services/user.service'
+import { createUserService, getUserByIdService } from '../services/user.service'
 
 export const createUserHandler = async (req: Request, res: Response) => {
   const data = req.body.data
@@ -9,5 +9,21 @@ export const createUserHandler = async (req: Request, res: Response) => {
     return
   }
 
-  res.send('Baad')
+  try {
+    const user = await createUserService(data.email, data.password)
+    res.status(201).send({ data: user })
+  } catch (error: any) {
+    res.status(400).send({ data: { message: error.message } })
+  }
+}
+
+export const getUserHandler = async (req: Request, res: Response) => {
+  const id = req.params.id
+
+  try {
+    const user = await getUserByIdService(id)
+    res.status(200).send({ data: user })
+  } catch (error: any) {
+    res.status(404).send({ data: { message: error.message } })
+  }
 }
