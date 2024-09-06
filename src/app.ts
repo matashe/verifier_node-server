@@ -3,7 +3,7 @@ import router from './routes'
 import dotenv from 'dotenv'
 
 dotenv.config()
-const PORT = process.env.SERVER_PORT || 3000
+const PORT = process.env.SERVER_PORT || 1337
 
 console.log('PORT:', PORT)
 
