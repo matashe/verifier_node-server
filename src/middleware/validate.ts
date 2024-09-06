@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
-import { AnySchema, parse } from 'valibot'
+import { ObjectSchema, parse } from 'valibot'
 
 const validate =
-  (schema: AnySchema) =>
+  (schema: ObjectSchema<any, any>) =>
   async (req: Request, res: Response, next: NextFunction) => {
     try {
       await parse(schema, req.body)

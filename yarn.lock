@@ -42,10 +42,10 @@
     semver "^7.3.5"
     tar "^6.1.11"
 
-"@prisma/client@5.18.0":
-  version "5.18.0"
-  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-5.18.0.tgz#526e4281a448f214c0ff81d65c39243608c98294"
-  integrity sha512-BWivkLh+af1kqC89zCJYkHsRcyWsM8/JHpsDMM76DjP3ZdEquJhXa4IeX+HkWPnwJ5FanxEJFZZDTWiDs/Kvyw==
+"@prisma/client@5.19.1":
+  version "5.19.1"
+  resolved "https://registry.yarnpkg.com/@prisma/client/-/client-5.19.1.tgz#d73f2b17b08628b6450c1c2dd20924d7a993aadf"
+  integrity sha512-x30GFguInsgt+4z5I4WbkZP2CGpotJMUXy+Gl/aaUjHn2o1DnLYNTA+q9XdYmAQZM8fIIkvUiA2NpgosM3fneg==
 
 "@prisma/debug@5.19.1":
   version "5.19.1"
@@ -1154,7 +1154,7 @@ pino@^9.3.2:
     sonic-boom "^4.0.1"
     thread-stream "^3.0.0"
 
-prisma@^5.19.1:
+prisma@5.19.1:
   version "5.19.1"
   resolved "https://registry.yarnpkg.com/prisma/-/prisma-5.19.1.tgz#33a4fecb9bcdf1c3f40d2c7e1cc06055edbb0ebc"
   integrity sha512-c5K9MiDaa+VAAyh1OiYk76PXOme9s3E992D7kvvIOhCrNsBQfy2mP2QAQtX0WNj140IgG++12kwZpYB9iIydNQ==
