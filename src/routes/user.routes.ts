@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import validate from '../middleware/validate'
+import authorize from '../middleware/authorize'
 
 // Controllers
 import {
@@ -16,7 +17,7 @@ userRouter.get('/api/users', (req, res) => {
   res.send('Hello Users!')
 })
 
-userRouter.get('/api/users/:id', (req, res) => {
+userRouter.get('/api/users/:id', authorize, (req, res) => {
   getUserHandler(req, res)
 })
 
