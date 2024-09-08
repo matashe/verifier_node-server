@@ -1,6 +1,8 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
 import { signJwt, verifyJwt } from '../utils/jwt.utils'
+import { v4 } from 'uuid'
+import lodash from 'lodash'
 
 const prisma = new PrismaClient()
 
@@ -12,7 +14,6 @@ export const createSessionService = async (email: string, password: string) => {
   }
 
   // Compare the password with the hashed password
-  // from the database
   if (user.password !== null) {
     const passwordValid = await bcrypt.compare(password, user.password)
 
@@ -21,14 +22,24 @@ export const createSessionService = async (email: string, password: string) => {
     }
   }
 
+  // Omit password from the user object
+  const sessionUser = lodash.omit(user, 'password')
+
   try {
+    // Create session id
+    const sessionId = v4()
+
     // Create a JWT token
-    const token = await signJwt({ userId: user.id }, { expiresIn: '15m' })
+    const token = await signJwt(
+      { user: sessionUser, sessionId },
+      { expiresIn: '15m' }
+    )
     const refreshToken = await signJwt({ userId: user.id }, { expiresIn: '1y' })
 
     // Create session
     const session = await prisma.session.create({
       data: {
+        id: sessionId,
         token,
         refreshToken,
         valid: true,
@@ -49,6 +60,19 @@ export const createSessionService = async (email: string, password: string) => {
 export const refreshSessionService = async (refreshToken: string) => {
   try {
     const decoded = verifyJwt(refreshToken)
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}
+
+export const invalidateSessionService = async (sessionId: string) => {
+  try {
+    const session = await prisma.session.update({
+      where: { id: sessionId },
+      data: { valid: false },
+    })
+
+    return session
   } catch (error: any) {
     throw new Error(error.message)
   }

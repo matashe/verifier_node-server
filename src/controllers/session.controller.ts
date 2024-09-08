@@ -5,6 +5,7 @@ import logger from './../utils/logger'
 import {
   createSessionService,
   refreshSessionService,
+  invalidateSessionService,
 } from './../services/session.service'
 
 export const createSessionHandler = async (req: Request, res: Response) => {
@@ -38,3 +39,5 @@ export const refreshSessionHandler = async (req: Request, res: Response) => {
     res.status(400).send({ data: { message: error.message } })
   }
 }
+
+export const deleteSessionHandler = async (req: Request, res: Response) => {}
