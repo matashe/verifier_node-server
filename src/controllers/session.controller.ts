@@ -1,4 +1,6 @@
 import { Request, Response } from 'express'
+import { RequestWithPayload } from '../types/request.type'
+import lodash from 'lodash'
 import logger from './../utils/logger'
 
 // Services
@@ -37,4 +39,18 @@ export const refreshSessionHandler = async (req: Request, res: Response) => {
   }
 }
 
-export const deleteSessionHandler = async (req: Request, res: Response) => {}
+export const deleteSessionHandler = async (req: Request, res: Response) => {
+  const sessionId = lodash.get(req, 'sessionId')
+
+  try {
+    if (sessionId) {
+      await invalidateSessionService(sessionId)
+    }
+
+    res.clearCookie('jwt')
+    res.status(200)
+    res.send({ data: { message: 'Session invalidated' } })
+  } catch (error: any) {
+    res.status(400).send({ data: { message: error.message } })
+  }
+}

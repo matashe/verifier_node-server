@@ -1,15 +1,8 @@
 import { Request, Response, NextFunction } from 'express'
 import logger from './../utils/logger'
 import { verifyJwt } from './../utils/jwt.utils'
-import { set } from 'lodash'
+import lodash from 'lodash'
 import { User } from '@prisma/client'
-
-interface RequestWithPayload extends Request {
-  data: {
-    user: Omit<User, 'password'>
-    sessionId: string
-  }
-}
 
 const deserializeData = async (
   req: Request,
@@ -28,7 +21,17 @@ const deserializeData = async (
   try {
     const payload = await verifyJwt(token)
 
-    res.send({ data: payload })
+    const user = lodash.get(payload, 'user')
+    const sessionId = lodash.get(payload, 'sessionId')
+
+    if (!user || !sessionId) {
+      throw new Error('Invalid token')
+    }
+
+    lodash.set(req, 'user', user)
+    lodash.set(req, 'sessionId', sessionId)
+
+    next()
   } catch (error: any) {
     logger.error(error)
     res.status(400).send({ data: { message: error.message } })
