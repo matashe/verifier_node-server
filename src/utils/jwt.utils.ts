@@ -16,7 +16,11 @@ export const signJwt = (payload: any, options: SignOptions) => {
 
 export const verifyJwt = (token: string) => {
   try {
-    verify(token, process.env.ENCRYPTION_R256_PUBLIC_KEY as string)
+    const payload = verify(
+      token,
+      process.env.ENCRYPTION_R256_PUBLIC_KEY as string
+    )
+    return payload
   } catch (error: any) {
     throw new Error(error.message)
   }

@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import validate from '../middleware/validate'
+import deserializeData from '../middleware/deserializeData'
 
 // Controllers
 import {
@@ -34,5 +35,7 @@ sessionRouter.put(
     refreshSessionHandler(req, res)
   }
 )
+
+sessionRouter.delete('/api/sessions', deserializeData, (req, res) => {})
 
 export default sessionRouter

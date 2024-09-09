@@ -3,6 +3,7 @@ import bcrypt from 'bcrypt'
 import { signJwt, verifyJwt } from '../utils/jwt.utils'
 import { v4 } from 'uuid'
 import lodash from 'lodash'
+import logger from '../utils/logger'
 
 const prisma = new PrismaClient()
 
@@ -34,7 +35,10 @@ export const createSessionService = async (email: string, password: string) => {
       { user: sessionUser, sessionId },
       { expiresIn: '15m' }
     )
-    const refreshToken = await signJwt({ userId: user.id }, { expiresIn: '1y' })
+    const refreshToken = await signJwt(
+      { user: sessionUser, sessionId },
+      { expiresIn: '1y' }
+    )
 
     // Create session
     const session = await prisma.session.create({
@@ -60,6 +64,29 @@ export const createSessionService = async (email: string, password: string) => {
 export const refreshSessionService = async (refreshToken: string) => {
   try {
     const decoded = verifyJwt(refreshToken)
+
+    // Check if the session is valid
+    const sessionId = lodash.get(decoded, 'sessionId')
+    const user = lodash.get(decoded, 'user')
+
+    const session = await prisma.session.findUnique({
+      where: { id: sessionId },
+    })
+
+    if (!session || !session.valid) {
+      throw new Error('Invalid session')
+    }
+
+    // Create new token
+    const token = signJwt({ user, sessionId }, { expiresIn: '15m' })
+
+    // Update session
+    await prisma.session.update({
+      where: { id: sessionId },
+      data: { token },
+    })
+
+    return token
   } catch (error: any) {
     throw new Error(error.message)
   }
@@ -73,6 +100,22 @@ export const invalidateSessionService = async (sessionId: string) => {
     })
 
     return session
+  } catch (error: any) {
+    throw new Error(error.message)
+  }
+}
+
+export const checkSessionValidService = async (sessionId: string) => {
+  try {
+    const session = await prisma.session.findUnique({
+      where: { id: sessionId },
+    })
+
+    if (!session || !session.valid) {
+      throw new Error('Invalid session')
+    }
+
+    return true
   } catch (error: any) {
     throw new Error(error.message)
   }

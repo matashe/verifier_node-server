@@ -24,19 +24,16 @@ export const createSessionHandler = async (req: Request, res: Response) => {
 }
 
 export const refreshSessionHandler = async (req: Request, res: Response) => {
-  const cookie = req.headers.cookie
-
-  if (!cookie) {
-    res.status(400).send({ data: { message: 'Invalid token' } })
-    return
-  }
-
-  const refreshToken = cookie.split('=')[1]
+  const { refreshToken } = req.body.data
 
   try {
-    refreshSessionService(refreshToken)
+    const newToken = await refreshSessionService(refreshToken)
+
+    res.cookie('jwt', newToken)
+    res.status(200)
+    res.send({ data: { message: 'Session refreshed' } })
   } catch (error: any) {
-    res.status(400).send({ data: { message: error.message } })
+    res.status(401).send({ data: { message: error.message } })
   }
 }
 

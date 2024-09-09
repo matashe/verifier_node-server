@@ -1,8 +1,17 @@
 import { Request, Response, NextFunction } from 'express'
 import logger from './../utils/logger'
 import { verifyJwt } from './../utils/jwt.utils'
+import { set } from 'lodash'
+import { User } from '@prisma/client'
 
-export const deserializeData = async (
+interface RequestWithPayload extends Request {
+  data: {
+    user: Omit<User, 'password'>
+    sessionId: string
+  }
+}
+
+const deserializeData = async (
   req: Request,
   res: Response,
   next: NextFunction
@@ -18,10 +27,12 @@ export const deserializeData = async (
 
   try {
     const payload = await verifyJwt(token)
-    req.body.data = payload
-    next()
+
+    res.send({ data: payload })
   } catch (error: any) {
     logger.error(error)
     res.status(400).send({ data: { message: error.message } })
   }
 }
+
+export default deserializeData
