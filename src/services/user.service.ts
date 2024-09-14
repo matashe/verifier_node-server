@@ -1,5 +1,6 @@
 import { PrismaClient } from '@prisma/client'
 import bcrypt from 'bcrypt'
+import lodash from 'lodash'
 import logger from '../utils/logger'
 
 const prisma = new PrismaClient()
@@ -27,4 +28,14 @@ export const getUserByIdService = async (id: string) => {
   })
 
   return user
+}
+
+export const getUsersService = async () => {
+  const users = await prisma.user.findMany()
+
+  const usersWithoutPasswords = users.map((user) => {
+    return lodash.omit(user, ['password'])
+  })
+
+  return usersWithoutPasswords
 }

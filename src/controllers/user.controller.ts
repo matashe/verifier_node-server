@@ -1,5 +1,9 @@
 import { Request, Response } from 'express'
-import { createUserService, getUserByIdService } from '../services/user.service'
+import {
+  createUserService,
+  getUserByIdService,
+  getUsersService,
+} from '../services/user.service'
 
 export const createUserHandler = async (req: Request, res: Response) => {
   const data = req.body.data
@@ -23,6 +27,15 @@ export const getUserHandler = async (req: Request, res: Response) => {
   try {
     const user = await getUserByIdService(id)
     res.status(200).send({ data: user })
+  } catch (error: any) {
+    res.status(404).send({ data: { message: error.message } })
+  }
+}
+
+export const getUsersHandler = async (req: Request, res: Response) => {
+  try {
+    const users = await getUsersService()
+    res.status(200).send({ data: users })
   } catch (error: any) {
     res.status(404).send({ data: { message: error.message } })
   }

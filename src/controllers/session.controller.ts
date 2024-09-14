@@ -1,5 +1,4 @@
 import { Request, Response } from 'express'
-import { RequestWithPayload } from '../types/request.type'
 import lodash from 'lodash'
 import logger from './../utils/logger'
 
@@ -31,7 +30,10 @@ export const refreshSessionHandler = async (req: Request, res: Response) => {
   try {
     const newToken = await refreshSessionService(refreshToken)
 
-    res.cookie('jwt', newToken)
+    res.cookie('jwt', newToken, {
+      httpOnly: true, // Cookie is not accessible from JavaScript
+      sameSite: 'none', // Restricts the cookie to be sent with cross-origin requests
+    })
     res.status(200)
     res.send({ data: { message: 'Session refreshed' } })
   } catch (error: any) {

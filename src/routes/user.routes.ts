@@ -6,6 +6,7 @@ import authorize from '../middleware/authorize'
 import {
   createUserHandler,
   getUserHandler,
+  getUsersHandler,
 } from '../controllers/user.controller'
 
 // Schemas
@@ -13,12 +14,16 @@ import { createUserSchema } from '../schemas/user.schema'
 
 const userRouter = Router()
 
-userRouter.get('/api/users', (req, res) => {
-  res.send('Hello Users!')
+userRouter.get('/api/users', authorize, (req, res) => {
+  getUsersHandler(req, res)
 })
 
 userRouter.get('/api/users/:id', authorize, (req, res) => {
   getUserHandler(req, res)
+})
+
+userRouter.put('/api/users/update-password', (req, res) => {
+  res.send('Update user')
 })
 
 userRouter.post('/api/users', validate(createUserSchema), (req, res) => {

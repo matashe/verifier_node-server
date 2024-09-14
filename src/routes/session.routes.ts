@@ -1,7 +1,6 @@
 import { Router } from 'express'
 import validate from '../middleware/validate'
 import deserializeData from '../middleware/deserializeData'
-import { RequestWithPayload } from '../types/request.type'
 import logger from '../utils/logger'
 
 // Controllers
