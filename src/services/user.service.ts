@@ -20,10 +20,36 @@ export const createUserService = async (email: string, password: string) => {
   return user
 }
 
+export const createUserByOauthService = async (
+  email: string,
+  name: string,
+  surname: string
+) => {
+  const user = await prisma.user.create({
+    data: {
+      email,
+      name,
+      surname,
+    },
+  })
+
+  return user
+}
+
 export const getUserByIdService = async (id: string) => {
   const user = await prisma.user.findUnique({
     where: {
       id,
+    },
+  })
+
+  return user
+}
+
+export const getUserByEmailService = async (email: string) => {
+  const user = await prisma.user.findUnique({
+    where: {
+      email,
     },
   })
 
@@ -38,4 +64,26 @@ export const getUsersService = async () => {
   })
 
   return usersWithoutPasswords
+}
+
+export const updateUserNameAndSurnameService = async (
+  email: string,
+  name: string,
+  surname: string
+) => {
+  try {
+    const user = await prisma.user.update({
+      where: {
+        email,
+      },
+      data: {
+        name,
+        surname,
+      },
+    })
+
+    return user
+  } catch (error: any) {
+    throw new Error('Failed to update user')
+  }
 }

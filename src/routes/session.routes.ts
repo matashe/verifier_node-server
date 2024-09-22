@@ -6,15 +6,13 @@ import logger from '../utils/logger'
 // Controllers
 import {
   createSessionHandler,
+  createSessionAzureHandler,
   refreshSessionHandler,
   deleteSessionHandler,
 } from '../controllers/session.controller'
 
 // Schemas
-import {
-  createSessionSchema,
-  refreshSessionSchema,
-} from '../schemas/session.schema'
+import { createSessionSchema } from '../schemas/session.schema'
 import authorize from '../middleware/authorize'
 
 const sessionRouter = Router()
@@ -31,13 +29,13 @@ sessionRouter.post(
   }
 )
 
-sessionRouter.put(
-  '/api/sessions',
-  validate(refreshSessionSchema),
-  (req, res) => {
-    refreshSessionHandler(req, res)
-  }
-)
+sessionRouter.get('/api/sessions/oauth/azure', (req, res) => {
+  createSessionAzureHandler(req, res)
+})
+
+sessionRouter.put('/api/sessions', (req, res) => {
+  refreshSessionHandler(req, res)
+})
 
 sessionRouter.delete(
   '/api/sessions',

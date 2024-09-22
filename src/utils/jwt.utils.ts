@@ -1,4 +1,4 @@
-import { sign, verify, SignOptions } from 'jsonwebtoken'
+import { sign, verify, SignOptions, decode } from 'jsonwebtoken'
 import logger from './logger'
 
 export const signJwt = (payload: any, options: SignOptions) => {
@@ -23,5 +23,15 @@ export const verifyJwt = (token: string) => {
     return payload
   } catch (error: any) {
     throw new Error(error.message)
+  }
+}
+
+export const decodeJwt = (token: string) => {
+  try {
+    const payload = decode(token, { json: true })
+    return payload
+  } catch (error: any) {
+    logger.error(error)
+    return null
   }
 }
